@@ -8,12 +8,11 @@
 #include <ctime>
 #include <windows.h>
 #include "Tile.h"
-
-
+using namespace std;
 class Board {
 protected:
     int size;
-    vector<vector<Tile*>> tiles;
+    std::vector<std::vector<Tile*>> tiles;
     bool useLetters; // Biến để lưu chế độ hiển thị (số hoặc chữ)
 
     static void setColor(int color); // Static function
@@ -29,6 +28,11 @@ public:
     virtual bool moveUp();
     virtual bool moveDown();
     virtual bool canMove() const;
+    bool isWinningCondition() const;
+    std::vector<std::pair<int, int>> getEmptyPositions() const;
+    std::vector<std::vector<int>> getTileValues() const;
+    void setTileValue(int row, int col, int value);
+    bool has2048() const;
 };
 
 class Board4x4 : public Board {

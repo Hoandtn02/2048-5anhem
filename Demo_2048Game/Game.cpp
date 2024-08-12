@@ -92,40 +92,78 @@ void Game::restartGame() {
 void Game::play() {
     while (true) {
         board->display();
+        cout << "Press 'M' to return to menu.\n";
+        // Kiểm tra nếu người chơi thắng
+        if (board->has2048()) {
 
-        // Check if game is over
+            cout << "Press 'R' to restart or 'Q' to exit.\n";
+            int ch = _getch();
+            if (ch == 'R' || ch == 'r') {
+                restartGame();
+                continue;
+            }
+            else if (ch == 'Q' || ch == 'q') {
+                break;
+            }
+            // Tiếp tục hiển thị thông báo cho đến khi nhấn 'R' hoặc 'Q'
+            while (true) {
+                ch = _getch();
+                if (ch == 'R' || ch == 'r') {
+                    restartGame();
+                    break;
+                }
+                else if (ch == 'Q' || ch == 'q') {
+                    return; // Thoát trò chơi
+                }
+            }
+        }
+
+        // Kiểm tra nếu trò chơi đã kết thúc
         if (isGameOver()) {
             cout << "\nGame Over!\n";
-            cout << "Press 'R' to restart or 'Q' to quit.\n";
-        }
-        else {
-            cout << "Press 'M' to return to menu.\n";
+            cout << "Press 'R' to restart or 'Q' to exit.\n";
+            int ch = _getch();
+            if (ch == 'R' || ch == 'r') {
+                restartGame();
+                continue;
+            }
+            else if (ch == 'Q' || ch == 'q') {
+                break;
+            }
+            continue;
         }
 
         int ch = _getch();
         bool moved = false;
-        if (ch == 75) { // Left arrow key
+        if (ch == 75) { // Phím mũi tên trái
             moved = board->moveLeft();
         }
-        else if (ch == 77) { // Right arrow key
+        else if (ch == 77) { // Phím mũi tên phải
             moved = board->moveRight();
         }
-        else if (ch == 72) { // Up arrow key
+        else if (ch == 72) { // Phím mũi tên lên
             moved = board->moveUp();
         }
-        else if (ch == 80) { // Down arrow key
+        else if (ch == 80) { // Phím mũi tên xuống
             moved = board->moveDown();
         }
-        else if (ch == 'M' || ch == 'm') { // 'M' to return to menu
-            selectGameMode(); // Chọn chế độ chơi
+        else if (ch == 'M' || ch == 'm') { // 'M' để quay lại menu
+            selectGameMode();
             selectBoardSize();
         }
-        else if (ch == 'R' || ch == 'r') { // 'R' to restart game
-            restartGame(); // Khởi động lại trò chơi với kích thước hiện tại
-            continue; // Bắt đầu trò chơi mới
+        else if (ch == 'R' || ch == 'r') { // 'R' để khởi động lại trò chơi
+            restartGame();
+            continue;
         }
-        else if (ch == 'Q' || ch == 'q') { // 'Q' to quit game
+        else if (ch == 'Q' || ch == 'q') { // 'Q' để thoát trò chơi
             break;
+        }
+        else if (ch == 'C' || ch == 'c') { // 'C' để gian lận và đặt ô thành 2048
+            auto emptyPositions = board->getEmptyPositions();
+            if (!emptyPositions.empty()) {
+                int idx = rand() % emptyPositions.size();
+                board->setTileValue(emptyPositions[idx].first, emptyPositions[idx].second, 2048);
+            }
         }
 
         if (moved) {
@@ -133,3 +171,4 @@ void Game::play() {
         }
     }
 }
+

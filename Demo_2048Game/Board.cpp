@@ -46,18 +46,18 @@ void Board::setColor(int color) {
 void Board::display() const {
     system("cls");
 
-    // Get console size
+    // Lấy kích thước cửa sổ console
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     int consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 
-    // Calculate board width and left padding for centering
-    const int cellWidth = 7; // Cell width including padding
-    const int cellHeight = 3; // Cell height including padding
+    // Tính toán chiều rộng bảng và khoảng cách trái để căn giữa
+    const int cellWidth = 7; // Chiều rộng ô bao gồm cả padding
+    const int cellHeight = 3; // Chiều cao ô bao gồm cả padding
     const int boardWidth = size * (cellWidth + 1) + 1;
     const int leftPadding = (consoleWidth - boardWidth) / 2;
 
-    // Adjust left padding if it's negative
+    // Điều chỉnh khoảng cách trái nếu nó âm
     int leftPaddingAdjusted;
     if (leftPadding > 0) {
         leftPaddingAdjusted = leftPadding;
@@ -66,13 +66,13 @@ void Board::display() const {
         leftPaddingAdjusted = 0;
     }
 
-    // Border characters
+    // Ký tự viền
     const string horizontalBorder = "=======";
     const char verticalBorder = '|';
 
     cout << "\n" << string(leftPaddingAdjusted, ' ') << "2048 Game\n\n";
 
-    // Print top border
+    // In viền trên
     cout << string(leftPaddingAdjusted, ' ') << "+";
     for (int j = 0; j < size; ++j) {
         cout << horizontalBorder << "+";
@@ -84,25 +84,25 @@ void Board::display() const {
             cout << string(leftPaddingAdjusted, ' ') << verticalBorder;
             for (int j = 0; j < size; ++j) {
                 if (k == cellHeight / 2) {
-                    // Print the value in the middle row of the cell
+                    // In giá trị ở hàng giữa của ô
                     if (tiles[i][j]->isEmpty()) {
-                        setColor(8); // Grey color for empty cells
+                        setColor(8); // Màu xám cho ô trống
                         cout << setw(cellWidth) << " ";
                     }
                     else {
                         switch (tiles[i][j]->getValue()) {
-                        case 2: setColor(9); break;   // Blue
-                        case 4: setColor(10); break;  // Green
-                        case 8: setColor(11); break;  // Cyan
-                        case 16: setColor(12); break; // Red
-                        case 32: setColor(13); break; // Magenta
-                        case 64: setColor(14); break; // Yellow
-                        case 128: setColor(15); break; // White
-                        case 256: setColor(16); break; // Cyan
-                        case 512: setColor(17); break; // Magenta
-                        case 1024: setColor(18); break; // Yellow
-                        case 2048: setColor(19); break; // Red
-                        default: setColor(7); break;   // Default color
+                        case 2: setColor(9); break;   // Xanh dương
+                        case 4: setColor(10); break;  // Xanh lá
+                        case 8: setColor(11); break;  // Xanh cyan
+                        case 16: setColor(12); break; // Đỏ
+                        case 32: setColor(13); break; // Tím
+                        case 64: setColor(14); break; // Vàng
+                        case 128: setColor(15); break; // Trắng
+                        case 256: setColor(16); break; // Xanh cyan
+                        case 512: setColor(17); break; // Tím
+                        case 1024: setColor(18); break; // Vàng
+                        case 2048: setColor(19); break; // Đỏ
+                        default: setColor(7); break;   // Màu mặc định
                         }
                         string valueString = tiles[i][j]->getDisplayValue(useLetters);
                         int valueWidth = valueString.length();
@@ -111,20 +111,25 @@ void Board::display() const {
                     }
                 }
                 else {
-                    // Print empty rows
+                    // In hàng trống
                     cout << setw(cellWidth) << " ";
                 }
-                setColor(7); // Reset to default color
+                setColor(7); // Đặt lại màu mặc định
                 cout << verticalBorder;
             }
             cout << "\n";
         }
-        // Print horizontal border
+        // In viền ngang
         cout << string(leftPaddingAdjusted, ' ') << "+";
         for (int j = 0; j < size; ++j) {
             cout << horizontalBorder << "+";
         }
         cout << "\n";
+    }
+
+    // In thông báo "You Win!" nếu điều kiện thắng được thỏa mãn
+    if (isWinningCondition()) {
+        cout << "\n" << string(leftPaddingAdjusted, ' ') << "YOU WIN!\n";
     }
 }
 
@@ -197,6 +202,52 @@ bool Board::canMove() const {
             if (tiles[i][j]->isEmpty()) return true;
             if (j < size - 1 && tiles[i][j]->canCombine(*tiles[i][j + 1])) return true;
             if (i < size - 1 && tiles[i][j]->canCombine(*tiles[i + 1][j])) return true;
+        }
+    }
+    return false;
+}
+bool Board::isWinningCondition() const {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (tiles[i][j]->getValue() == 2048) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+std::vector<std::pair<int, int>> Board::getEmptyPositions() const {
+    std::vector<std::pair<int, int>> emptyPositions;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (tiles[i][j]->isEmpty()) {
+                emptyPositions.push_back({ i, j });
+            }
+        }
+    }
+    return emptyPositions;
+}
+std::vector<std::vector<int>> Board::getTileValues() const {
+    std::vector<std::vector<int>> values(size, std::vector<int>(size));
+    for (int i = 0; i < size; ++i) {
+
+        for (int j = 0; j < size; ++j) {
+            values[i][j] = tiles[i][j]->getValue();
+        }
+    }
+    return values;
+}
+void Board::setTileValue(int row, int col, int value) {
+    if (row >= 0 && row < size && col >= 0 && col < size) {
+        tiles[row][col]->setValue(value);
+    }
+}
+bool Board::has2048() const {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (tiles[i][j]->getValue() == 2048) {
+                return true;
+            }
         }
     }
     return false;

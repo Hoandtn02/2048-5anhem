@@ -3,13 +3,12 @@
 
 #include <iostream>
 #include <sstream>
-using namespace std;
 
 class Tile {
 public:
     virtual ~Tile() {}
     virtual bool isEmpty() const = 0;
-    virtual string getDisplayValue(bool useLetters) const = 0;
+    virtual std::string getDisplayValue(bool useLetters) const = 0;
     virtual void setValue(int newValue) = 0;
     virtual int getValue() const = 0;
     virtual bool canCombine(const Tile& other) const = 0;
@@ -20,8 +19,8 @@ class NumberTile : public Tile {
 private:
     int value;
 
-    string intToString(int value) const {
-        ostringstream oss;
+    std::string intToString(int value) const {
+        std::ostringstream oss;
         oss << value;
         return oss.str();
     }
@@ -33,7 +32,7 @@ public:
         return value == 0;
     }
 
-    string getDisplayValue(bool useLetters) const override {
+    std::string getDisplayValue(bool useLetters) const override {
         if (value == 0) return ".";
         if (useLetters) {
             switch (value) {
