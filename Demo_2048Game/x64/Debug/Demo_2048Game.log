@@ -1,0 +1,6 @@
+﻿  Board.cpp
+C:\Desktop\Demo_2048Game\Demo_2048Game\Board.cpp(108,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Game.cpp
+  main.cpp
+  Generating Code...
+  Demo_2048Game.vcxproj -> C:\Desktop\Demo_2048Game\x64\Debug\Demo_2048Game.exe
