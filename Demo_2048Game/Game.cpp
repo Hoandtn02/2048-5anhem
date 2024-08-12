@@ -92,7 +92,7 @@ void Game::restartGame() {
 void Game::play() {
     while (true) {
         board->display();
-        cout << "Press 'M' to return to menu.\n";
+        cout << "Press 'M' to return to menu\n";
         // Kiểm tra nếu người chơi thắng
         if (board->has2048()) {
             

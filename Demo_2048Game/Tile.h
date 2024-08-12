@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+using namespace std;
 
 class Tile {
 public:
@@ -47,7 +48,7 @@ public:
             case 512: return "I";
             case 1024: return "J";
             case 2048: return "K";
-            default: return "X"; // Sử dụng 'X' thay cho '?'
+            default: return "X"; 
             }
         }
         else {
